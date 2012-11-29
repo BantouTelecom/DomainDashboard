@@ -411,7 +411,7 @@ OGRA.prototype.graph = function(elem_id, data, chart_type, type, options) {
     if (type == null || type == "google") {
         this.graph_google(elem_id, data, chart_type, options);
     } else if (type == "dygraphs") {
-        this.graph_dygraphs(elem_id, data);
+        this.graph_dygraphs(elem_id, data, chart_type, options);
     } else if (type == "high") {
         this.graph_high(elem_id, data, chart_type, options);
     } else if (type == "flot") {
@@ -525,7 +525,7 @@ OGRA.prototype.graph_google = function(elem_id, data, chart_type, options) {
     return true;
 }
 
-OGRA.prototype.graph_dygraphs = function(elem_id, data) {
+OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options) {
     
     // import Dygraphs
     if (this.imported["dygraphs"] == false) {
@@ -536,7 +536,7 @@ OGRA.prototype.graph_dygraphs = function(elem_id, data) {
     if (typeof(Dygraph) == 'undefined') {
         var that = this;
         setTimeout(function() {
-            that.graph_dygraphs(elem_id, data);
+            that.graph_dygraphs(elem_id, data, chart_type, options);
         }, this.retry_time);
         return;
     }
@@ -555,7 +555,8 @@ OGRA.prototype.graph_dygraphs = function(elem_id, data) {
     this.remove_loading(element);
     
     // creating graph
-    new Dygraph(element, d );
+    //new Dygraph(element, d );
+    new Dygraph.GVizChart(element).draw(d, {title: options.title});
     
     // callback
     if ( typeof(options.callback) == "function" && typeof(options.callback_args) == "object") {
