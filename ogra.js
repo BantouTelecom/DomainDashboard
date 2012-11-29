@@ -18,6 +18,10 @@ function OGRA () {
     this.URL_FLOT = "https://raw.github.com/paradoxxxzero/flot/28f2377382b3af97c82cb3ebc081140b49fa9579/jquery.flot.js";
     this.URL_FLOT_PIE = "https://raw.github.com/flot/flot/master/jquery.flot.pie.js";
 
+    // TODO
+    //this.URL_FLOT = "http://www.benjaminbuffet.com/public/js/jquery.flot.js";
+    //this.URL_FLOT_BAR = "http://www.benjaminbuffet.com/public/js/jquery.flot.orderBars.js";
+
     
     // list of already imported libraries
     this.imported = {};
@@ -214,7 +218,8 @@ OGRA.prototype.import_flot = function() {
 
     document.write("<script type='text/javascript' src='" + this.URL_FLOT + "'></script>");
     document.write("<script type='text/javascript' src='" + this.URL_FLOT_PIE + "'></script>");
-    
+    //document.write("<script type='text/javascript' src='" + this.URL_FLOT_BAR + "'></script>");
+
     this.imported["flot"] = true;
     
 }
@@ -257,8 +262,6 @@ OGRA.prototype.data_dygraphs = function(data) {
         }
         result += "\n";
     }
-    
-    console.log(result);
     
     //TODO return false in case of error
     return result;
@@ -597,8 +600,8 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     }
     if (options.title == undefined) {
         options.title = '';
-    }
-    
+    } 
+
     // remove loading
     this.remove_loading(element);
     
@@ -608,6 +611,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             renderTo: element,
             type: chart_type,         
         },
+        colors: options.colors,
         credits: {
             enabled: false
         },
@@ -694,16 +698,19 @@ OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options) {
     if (chart_type == "column" || chart_type == "bar") {
         // bar & column
         for (var i = 0; i < d.length; i++) {
-            d[i].bars = {show: true, barWidth: 0.5, align: "center"};
+            d[i].bars = {show: true, barWidth: 0.3, align: "center"};
+            //TODO bug - bar chart with multiple series 
+            //d[i].bars = {order: 0, show: true, barWidth: 0.3, align: "center"};
+            //d[i].multiplebars = true;
         }
         
-        jQuery.plot(element, d, {xaxis: {labelAngle: 45, ticks: xLabels}} );
+        jQuery.plot(element, d, {xaxis: {labelAngle: 45, ticks: xLabels}, colors: options.colors} );
     } else if (chart_type == "pie") {
         // pie
-        jQuery.plot(element, d, { series: {pie: {show: true, label:{ threshold: 0.02} } }, legend: {show: false }});
+        jQuery.plot(element, d, { series: {pie: {show: true, label:{ threshold: 0.02} } }, legend: {show: false }, colors: options.colors});
     } else {
         // line
-        jQuery.plot(element, d, {xaxis: {labelAngle: 45, ticks: xLabels}});
+        jQuery.plot(element, d, {xaxis: {labelAngle: 45, ticks: xLabels}, colors: options.colors});
     }
         
     // callback
