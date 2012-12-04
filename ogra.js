@@ -13,7 +13,7 @@ function OGRA () {
     this.URL_JQUERY = "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js";
     this.URL_GOOGLE = "https://www.google.com/jsapi";
     this.URL_DYGRAPHS = "http://dygraphs.com/dygraph-combined.js";
-    this.URL_HIGH = "http://code.highcharts.com/highcharts.js";
+    this.URL_HIGH = "http://code.highcharts.com/highcharts.src.js";
     //this.URL_FLOT = "https://raw.github.com/flot/flot/master/jquery.flot.js";
     this.URL_FLOT = "https://raw.github.com/paradoxxxzero/flot/28f2377382b3af97c82cb3ebc081140b49fa9579/jquery.flot.js";
     this.URL_FLOT_PIE = "https://raw.github.com/flot/flot/master/jquery.flot.pie.js";
@@ -128,8 +128,12 @@ OGRA.prototype.import_google = function() {
     
     console.log("Loading: Google API");
     
-    document.write("<script type='text/javascript' src='" + this.URL_GOOGLE + "'></script>");
-
+    //document.write("<script type='text/javascript' src='" + this.URL_GOOGLE + "'></script>");
+    var script = document.createElement('script');
+    script.setAttribute('src', this.URL_GOOGLE);
+    script.setAttribute('type', 'text/javascript');
+    document.getElementsByTagName('head')[0].appendChild(script);
+    
     var that = this;
     
     var run_import_google = function() {
@@ -175,8 +179,12 @@ OGRA.prototype.import_dygraphs = function() {
 
     console.log("Loading: Dygraphs API");
 
-    document.write("<script type='text/javascript' src='" + this.URL_DYGRAPHS + "'></script>");
-
+    ///document.write("<script type='text/javascript' src='" + this.URL_DYGRAPHS + "'></script>");
+    var script = document.createElement('script');
+    script.setAttribute('src', this.URL_DYGRAPHS);
+    script.setAttribute('type', 'text/javascript');
+    document.getElementsByTagName('head')[0].appendChild(script);
+    
     this.imported["dygraphs"] = true;
 }
 
@@ -186,19 +194,28 @@ OGRA.prototype.import_high = function() {
         return true;
     }
     
-    console.log("Loading: HighCharts API");
-    
-    //document.write("<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>");
-    
     // import jQuery
     if (this.imported["jquery"] == false) {
         this.import("jquery");
     }
     
-    document.write("<script type='text/javascript' src='" + this.URL_HIGH + "'></script>");
-
-    this.imported["high"] = true;
+    if (typeof(jQuery) == 'undefined') {
+        var that = this;
+        setTimeout(function() {
+            that.import_high();
+        }, this.retry_time);
+        return;
+    }
     
+    console.log("Loading: HighCharts API");
+    
+    //document.write("<script type='text/javascript' src='" + this.URL_HIGH + "'></script>");
+    var script = document.createElement('script');
+    script.setAttribute('src', this.URL_HIGH);
+    script.setAttribute('type', 'text/javascript');
+    document.getElementsByTagName('head')[0].appendChild(script);
+    
+    this.imported["high"] = true;
 }
 
 OGRA.prototype.import_flot = function() {
@@ -214,12 +231,25 @@ OGRA.prototype.import_flot = function() {
         this.import("jquery");
     }
     
-    //document.write("<script type='text/javascript' src='http://people.iola.dk/olau/flot/jquery.flot.js'></script>");
+    //document.write("<script type='text/javascript' src='" + this.URL_FLOT + "'></script>");
+    //document.write("<script type='text/javascript' src='" + this.URL_FLOT_PIE + "'></script>");
+    ////document.write("<script type='text/javascript' src='" + this.URL_FLOT_BAR + "'></script>");
 
-    document.write("<script type='text/javascript' src='" + this.URL_FLOT + "'></script>");
-    document.write("<script type='text/javascript' src='" + this.URL_FLOT_PIE + "'></script>");
-    //document.write("<script type='text/javascript' src='" + this.URL_FLOT_BAR + "'></script>");
 
+
+    var script = document.createElement('script');
+    script.setAttribute('src', this.URL_FLOT);
+    script.setAttribute('type', 'text/javascript');
+    document.getElementsByTagName('head')[0].appendChild(script);
+    
+    
+    
+    var script = document.createElement('script');
+    script.setAttribute('src', this.URL_FLOT_PIE);
+    script.setAttribute('type', 'text/javascript');
+    document.getElementsByTagName('head')[0].appendChild(script);
+    
+    
     this.imported["flot"] = true;
     
 }
@@ -233,8 +263,12 @@ OGRA.prototype.import_jquery = function() {
     
     console.log("Loading: jQuery");
     
-    document.write("<script type='text/javascript' src='" + this.URL_JQUERY + "'></script>");
-
+    //document.write("<script type='text/javascript' src='" + this.URL_JQUERY + "'></script>");
+    var script = document.createElement('script');
+    script.setAttribute('src', this.URL_JQUERY);
+    script.setAttribute('type', 'text/javascript');
+    document.getElementsByTagName('head')[0].appendChild(script);
+    
     this.imported["jquery"] = true;
 }
 
@@ -556,7 +590,7 @@ OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options) {
     
     // creating graph
     //new Dygraph(element, d );
-    new Dygraph.GVizChart(element).draw(d, {title: options.title});
+    new Dygraph.GVizChart(element).draw(d, {title: options.title, colors: options.colors});
     
     // callback
     if ( typeof(options.callback) == "function" && typeof(options.callback_args) == "object") {
@@ -573,7 +607,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         this.import_high();
     }
     
-    if (typeof(Highcharts) == 'undefined' || typeof(jQuery) == 'undefined') {
+    if (typeof(Highcharts) == 'undefined' || typeof(jQuery) == 'undefined' || typeof(Highcharts.Chart) == 'undefined') {
         var that = this;
         setTimeout(function() {
             that.graph_high(elem_id, data, chart_type, options);
