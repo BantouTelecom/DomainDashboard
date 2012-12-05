@@ -340,10 +340,6 @@ OGRA.prototype.data_high = function(data, chart_type) {
                 result[v-1]['data'].push(data["rows"][r]["c"][v]["v"]);
             }
         }
-        
-        if (chart_type == "column" || chart_type == "line") {
-            xLabels.rotation = -45;
-        }
     }
 
 
@@ -625,6 +621,24 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     
     var d = high_format.result;
     var xLabels = high_format.xLabels;
+    xLabels.align = 'right';
+    
+    // auto rotated labels
+    if (chart_type == "column" || chart_type == "line") {
+        var longest_label = 0;
+        for (var i = 0; i<data["rows"].length; i++) {
+            longest_label = Math.max(longest_label, (data["rows"][i]["c"][0]["v"] + "").length);
+        }
+        
+        if (options.width / data["rows"].length < longest_label*10) { // TODO 10? how to get font-size?
+            xLabels.rotation = -45;
+            xLabels.align = 'right';
+        } else {
+            xLabels.rotation = 0;
+            xLabels.align = 'center';
+        }
+    }
+    
     
     // getting element
     var element = document.getElementById(elem_id);
@@ -635,7 +649,19 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     }
     if (options.title == undefined) {
         options.title = '';
-    } 
+    }
+    if (options.vAxis == undefined) {
+        options.vAxis = {};
+    }
+    if (options.vAxis.title == undefined) {
+        options.vAxis.title = '';
+    }
+    if (options.hAxis == undefined) {
+        options.hAxis = {};
+    }
+    if (options.hAxis.title == undefined) {
+        options.hAxis.title = '';
+    }
 
     // remove loading
     this.remove_loading(element);
@@ -657,15 +683,18 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             text: options.title
         },
         xAxis: {
+            title: {
+                text: options.hAxis.title
+            },
             categories: xLabels,
             labels: {
                 rotation: xLabels.rotation,
-                align: 'right'
+                align: xLabels.align
             }
         },
         yAxis: {
             title: {
-                text: ''
+                text: options.vAxis.title
             },
         },
         tooltip: {
