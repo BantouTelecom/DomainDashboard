@@ -306,6 +306,7 @@ OGRA.prototype.data_high = function(data, chart_type) {
     
     var result = [];
     var xLabels = [];
+    xLabels.type = undefined;
     
     // exception for pie chart
     if (chart_type == "pie") {
@@ -333,17 +334,26 @@ OGRA.prototype.data_high = function(data, chart_type) {
         
         for (var r in data["rows"]) {
             for (var v = 1; v < data["rows"][r]["c"].length; v++) {
-                if (v == 1) {
-                    xLabels.push(data["rows"][r]["c"][0]["v"]);
+                var dd = undefined;
+                
+                // is it datetime?
+                if ( typeof(data["rows"][r]["c"][0]["v"].getTime) == "function" ) {
+                    dd = data["rows"][r]["c"][0]["v"].getTime();
+                } else if (v == 1) {
+                    xLabels.push( data["rows"][r]["c"][0]["v"] );
                 }
-
-                result[v-1]['data'].push(data["rows"][r]["c"][v]["v"]);
+                
+                if (dd) {
+                    xLabels.type = 'datetime';
+                    result[v-1]['data'].push([ dd, data["rows"][r]["c"][v]["v"] ]);
+                } else {
+                    result[v-1]['data'].push(data["rows"][r]["c"][v]["v"]);
+                }
             }
         }
     }
-
-
-    return {"result": result, "xLabels":xLabels};
+    
+    return {"result": result, "xLabels": xLabels};
 }
 
 
@@ -623,6 +633,8 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     var xLabels = high_format.xLabels;
     xLabels.align = 'right';
     
+    options.categories = false;
+    
     // auto rotated labels
     if (chart_type == "column" || chart_type == "line") {
         var longest_label = 0;
@@ -639,6 +651,14 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         }
     }
     
+    // time data
+    if (typeof(xLabels.type) == 'undefined') {
+        xLabels.type = 'linear';
+        options.categories = xLabels;
+    } else if (chart_type == "column" || chart_type == "line") {
+        xLabels.rotation = 0;
+        xLabels.align = 'center';
+    }
     
     // getting element
     var element = document.getElementById(elem_id);
@@ -683,10 +703,11 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             text: options.title
         },
         xAxis: {
+            type: xLabels.type,
             title: {
                 text: options.hAxis.title
             },
-            categories: xLabels,
+            categories: options.categories,
             labels: {
                 rotation: xLabels.rotation,
                 align: xLabels.align
