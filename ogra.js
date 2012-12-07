@@ -327,25 +327,28 @@ OGRA.prototype.data_high = function(data, chart_type) {
             }
         }
     } else {
-        //
+        // date data
+        var dd = false;
+        
         for (var c = 0; c < data["cols"].length; c++) {
-            result.push({'name': data["cols"][c]["label"], 'data': []});
+            if (data["cols"][c]["type"] != "date") {
+                if (c != 0) {
+                    result.push({'name': data["cols"][c]["label"], 'data': []});
+                }
+            } else {
+                dd = true;
+            }
         }
         
         for (var r in data["rows"]) {
             for (var v = 1; v < data["rows"][r]["c"].length; v++) {
-                var dd = undefined;
-                
-                // is it datetime?
-                if ( typeof(data["rows"][r]["c"][0]["v"].getTime) == "function" ) {
-                    dd = data["rows"][r]["c"][0]["v"].getTime();
-                } else if (v == 1) {
+                if ( dd == false && v == 1 ) {
                     xLabels.push( data["rows"][r]["c"][0]["v"] );
                 }
                 
                 if (dd) {
                     xLabels.type = 'datetime';
-                    result[v-1]['data'].push([ dd, data["rows"][r]["c"][v]["v"] ]);
+                    result[v-1]['data'].push([ data["rows"][r]["c"][0]["v"].getTime(), data["rows"][r]["c"][v]["v"] ]);
                 } else {
                     result[v-1]['data'].push(data["rows"][r]["c"][v]["v"]);
                 }
@@ -651,8 +654,11 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         }
     }
     
+    var is_date = true;
+    
     // time data
     if (typeof(xLabels.type) == 'undefined') {
+        is_date = false;
         xLabels.type = 'linear';
         options.categories = xLabels;
     } else if (chart_type == "column" || chart_type == "line") {
@@ -697,7 +703,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             enabled: false
         },
         legend: {
-            enabled: false
+            enabled: true
         },
         title: {
             text: options.title
@@ -723,8 +729,16 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
                 if (chart_type == "pie") {
                     return '<b>'+ this.point.name +'</b>: '+ this.y;
                 }
-                //return '<b>'+ this.series.name +'</b>: '+ this.y;
-                return '<b>' + this.x +'</b>: ' + this.y;
+                
+                if (is_date) {
+                    //TODO better date format
+                    var dd = new Date();
+                    dd.setTime(this.x);
+                    
+                    return dd.toUTCString() + '<br/>' + '<b>'+ this.series.name +'</b>: '+ this.y;
+                }
+                
+                return '<b>' + this.x +'</b>' + '<br/>' + this.series.name + ': ' + this.y;
             }
         },
         series: d
