@@ -688,6 +688,21 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     if (options.hAxis.title == undefined) {
         options.hAxis.title = '';
     }
+    
+    options.show_legend = true;
+    if (d.length < 2) {
+        options.show_legend = false;
+    }
+    
+    options.legend_layout = 'vertical';
+    options.legend_align = 'right';
+    options.legend_verticalAlign = 'middle';
+    
+    if (options.width < 550) {
+        options.legend_layout = 'horizontal';
+        options.legend_align = 'center';
+        options.legend_verticalAlign = 'bottom';
+    }
 
     // remove loading
     this.remove_loading(element);
@@ -702,10 +717,13 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         },
         colors: options.colors,
         credits: {
-            enabled: false
+            enabled: false,
         },
         legend: {
-            enabled: true
+            enabled: options.show_legend,
+            layout: options.legend_layout,
+            align: options.legend_align,
+            verticalAlign: options.legend_verticalAlign,
         },
         title: {
             text: options.title
