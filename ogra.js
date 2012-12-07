@@ -696,7 +696,9 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     chart = new Highcharts.Chart({
         chart: {
             renderTo: element,
-            type: chart_type,         
+            type: chart_type,
+            width: options.width,
+            height: options.height,
         },
         colors: options.colors,
         credits: {
