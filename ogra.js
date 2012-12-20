@@ -56,7 +56,7 @@ function OGRA () {
         }
     }
         
-        
+
     this.retry_time = 50;
     
     // graphs waiting for importing of graphics library
@@ -128,7 +128,6 @@ OGRA.prototype.import_google = function() {
     
     console.log("Loading: Google API");
     
-    //document.write("<script type='text/javascript' src='" + this.URL_GOOGLE + "'></script>");
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_GOOGLE);
     script.setAttribute('type', 'text/javascript');
@@ -179,7 +178,6 @@ OGRA.prototype.import_dygraphs = function() {
 
     console.log("Loading: Dygraphs API");
 
-    ///document.write("<script type='text/javascript' src='" + this.URL_DYGRAPHS + "'></script>");
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_DYGRAPHS);
     script.setAttribute('type', 'text/javascript');
@@ -209,7 +207,6 @@ OGRA.prototype.import_high = function() {
     
     console.log("Loading: HighCharts API");
     
-    //document.write("<script type='text/javascript' src='" + this.URL_HIGH + "'></script>");
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_HIGH);
     script.setAttribute('type', 'text/javascript');
@@ -230,28 +227,18 @@ OGRA.prototype.import_flot = function() {
     if (this.imported["jquery"] == false) {
         this.import("jquery");
     }
-    
-    //document.write("<script type='text/javascript' src='" + this.URL_FLOT + "'></script>");
-    //document.write("<script type='text/javascript' src='" + this.URL_FLOT_PIE + "'></script>");
-    ////document.write("<script type='text/javascript' src='" + this.URL_FLOT_BAR + "'></script>");
-
-
 
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_FLOT);
     script.setAttribute('type', 'text/javascript');
     document.getElementsByTagName('head')[0].appendChild(script);
     
-    
-    
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_FLOT_PIE);
     script.setAttribute('type', 'text/javascript');
     document.getElementsByTagName('head')[0].appendChild(script);
     
-    
     this.imported["flot"] = true;
-    
 }
 
 // jQuery import
@@ -263,7 +250,6 @@ OGRA.prototype.import_jquery = function() {
     
     console.log("Loading: jQuery");
     
-    //document.write("<script type='text/javascript' src='" + this.URL_JQUERY + "'></script>");
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_JQUERY);
     script.setAttribute('type', 'text/javascript');
@@ -575,7 +561,6 @@ OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options) {
         this.import_dygraphs();
     }
     
-    
     if (typeof(Dygraph) == 'undefined') {
         var that = this;
         setTimeout(function() {
@@ -634,6 +619,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     
     var d = high_format.result;
     var xLabels = high_format.xLabels;
+    
     xLabels.align = 'right';
     
     options.categories = false;
@@ -666,6 +652,22 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         xLabels.align = 'center';
     }
     
+    //TODO upgrade
+    // reducing density of labels
+    if (options.width/xLabels.length < 20) {
+        var skip_step = 2;
+        
+        if (options.width/xLabels.length < 10) {
+            skip_step = 3;
+        }
+    }
+    
+    var marker_enable = true;
+    //TODO dont check just first series
+    if (d[0].data.length > 80) {
+        marker_enable = false;
+    }
+
     // getting element
     var element = document.getElementById(elem_id);
     
@@ -682,12 +684,29 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     if (options.vAxis.title == undefined) {
         options.vAxis.title = '';
     }
+    
+    
+    // logarithmic scale
+    var vAxis_type = 'linear';
+    if (options.vAxis.logScale != undefined && options.vAxis.logScale == true) {
+        vAxis_type = 'logarithmic';
+        // removing zero and subzero values from data set
+        for (var i = 0; i < d.length; i++) {
+            for (var j = 0; j < d[i].data.length; j++) {
+                if ( d[i].data[j] <= 0) {
+                    d[i].data[j] = null;
+                }
+            }
+        }
+    }
+    
     if (options.hAxis == undefined) {
         options.hAxis = {};
     }
     if (options.hAxis.title == undefined) {
         options.hAxis.title = '';
     }
+    
     
     options.show_legend = true;
     if (d.length < 2) {
@@ -706,6 +725,88 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
 
     // remove loading
     this.remove_loading(element);
+    
+    // time data axis format
+
+    if (options.dateTimeLabelFormats == undefined) {
+        options.dateTimeLabelFormats = {
+            //default
+
+            millisecond: '%H:%M:%S',
+            second: '%H:%M:%S',
+            minute: '%H:%M',
+            hour: '%H:%M',
+            day: '%e. %b',
+            week: '%e. %b',
+            month: '%b \'%y',
+            year: '%Y'
+
+            /*
+            millisecond: '%e. %b',
+            second: '%e. %b',
+            minute: '%e. %b',
+            hour: '%e. %b',
+            day: '%e. %b',
+            week: '%e. %b',
+            month: '%b \'%y',
+            year: '%Y'
+            */
+        };
+    }
+    
+    // localization setting
+    if (options.lang != undefined) {
+        Highcharts.setOptions({
+            lang: options.lang
+        });
+    }
+    
+    // x axis label
+    var xaxis_label = undefined;
+    if (xLabels.type != "datetime") {
+        xaxis_label = function() {
+            //TODO font-size has no value
+            var wrap_edge = 19;
+            if (options.height/this.value.length < wrap_edge) {
+                return this.value.substr(0, Math.floor(options.height/wrap_edge -5) ) + "...";
+            } else {
+                return this.value;
+            }
+        }
+    }
+    
+    // column datetime chart with only one etry
+    var min_range = undefined;
+    var point_range = undefined;
+    
+    if (typeof(options.hAxis.viewWindow) != 'undefined') {
+        if (typeof(options.hAxis.viewWindow.max) != 'undefined' && typeof(options.hAxis.viewWindow.min) != 'undefined') {
+            if (d[0].data.length == 1) {
+                min_range = options.hAxis.viewWindow.max-options.hAxis.viewWindow.min;
+                point_range = (options.hAxis.viewWindow.max-options.hAxis.viewWindow.min) /2;
+                
+                options.dateTimeLabelFormats = {
+                    millisecond: ' ',
+                    second: ' ',
+                    minute: ' ',
+                    hour: ' ',
+                    day: '%e. %b',
+                    week: '%e. %b',
+                    month: '%b \'%y',
+                    year: '%Y'
+                };
+            }
+        }
+    }
+    
+    
+    // set correct time zone
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+    
     
     // creating graph
     chart = new Highcharts.Chart({
@@ -729,6 +830,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             text: options.title
         },
         xAxis: {
+            minRange: min_range,
             type: xLabels.type,
             title: {
                 text: options.hAxis.title
@@ -736,10 +838,14 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             categories: options.categories,
             labels: {
                 rotation: xLabels.rotation,
-                align: xLabels.align
-            }
+                align: xLabels.align,
+                step: skip_step,
+                formatter: xaxis_label
+            },
+            dateTimeLabelFormats: options.dateTimeLabelFormats
         },
         yAxis: {
+            type: vAxis_type,
             title: {
                 text: options.vAxis.title
             },
@@ -751,21 +857,30 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
                 }
                 
                 if (is_date) {
-                    //TODO better date format
                     var dd = new Date();
                     dd.setTime(this.x);
                     
-                    return dd.toUTCString() + '<br/>' + '<b>'+ this.series.name +'</b>: '+ this.y;
+                    return dd.getDate() + ". " + (dd.getMonth()+1) + ". " + dd.getFullYear() + '<br/>' + '<b>'+ this.series.name +'</b>: '+ this.y;
                 }
                 
                 return '<b>' + this.x +'</b>' + '<br/>' + this.series.name + ': ' + this.y;
+            }
+        },
+        plotOptions: {
+            column : {
+                pointRange: point_range,
+            },
+            line: {
+                marker: {
+                    enabled: marker_enable
+                }
             }
         },
         series: d
     });
     
     // callback
-    if ( typeof(options.callback) == "function" && typeof(options.callback_args) == "object") {
+    if ( typeof(options.callback) == "function" && typeof(options.callback_args) == "object" ) {
         options.callback.apply(undefined, options.callback_args);
     }
     
@@ -858,7 +973,6 @@ OGRA.prototype.graph_ajax = function(elem_id, data_url, chart_type, type, option
         }, this.retry_time);
         return;
     }
-    
     
     //
     var that = this;
