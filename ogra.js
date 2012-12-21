@@ -775,7 +775,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         }
     }
     
-    // column datetime chart with only one etry
+    // column datetime chart with only one entry
     var min_range = undefined;
     var point_range = undefined;
     
@@ -799,6 +799,13 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         }
     }
     
+    // stacking
+    var stacking = null;
+    if (typeof(options.isStacked) != 'undefined') {
+        if (options.isStacked == true) {
+            stacking = 'normal';
+        }
+    }
     
     // set correct time zone
     Highcharts.setOptions({
@@ -874,6 +881,9 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
                 marker: {
                     enabled: marker_enable
                 }
+            },
+            series: {
+                stacking: stacking
             }
         },
         series: d
