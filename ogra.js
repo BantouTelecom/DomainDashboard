@@ -86,21 +86,6 @@ OGRA.prototype.error = function(msg, elem_id) {
     this.remove_loading(element);
 }
 
-//TODO useful?
-OGRA.prototype.warning = function(msg, elem_id) {
-    var element = document.getElementById(elem_id);
-    var message = document.createElement('p');
-    message.style.color = '#000';
-    message.style.background = '#dd0';
-    message.style.position = 'relative';
-    message.style.top = '0px';
-    message.appendChild(document.createTextNode("OGRA Warning: " + msg));
-    
-    element.insertBefore(message, element.firstChild);
-    
-    console.log("OGRA Warning: " + msg);
-}
-
 // Importing external libraries, requested for creating graphs.
 OGRA.prototype.import = function(type) {
     if (type == null) {
@@ -525,7 +510,7 @@ OGRA.prototype.graph_google = function(elem_id, data, chart_type, options) {
     // options
     if (options.legend == undefined) {
         options.legend = {};
-        options.legend.position = "none";
+        options.legend.position = "right";
     }
     
     if (chart_type == "line") {
@@ -583,7 +568,6 @@ OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options) {
     this.remove_loading(element);
     
     // creating graph
-    //new Dygraph(element, d );
     new Dygraph.GVizChart(element).draw(d, {title: options.title, colors: options.colors});
     
     // callback
@@ -662,8 +646,10 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         }
     }
     
+    // display marker on line
     var marker_enable = true;
     //TODO dont check just first series
+	//TODO take graph width as a factor
     if (d[0].data.length > 80) {
         marker_enable = false;
     }
