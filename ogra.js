@@ -606,8 +606,51 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     
     xLabels.align = 'right';
     
-    options.categories = false;
-    
+	// options
+    if (options == undefined) {
+        options = {};
+    }
+    if (options.title == undefined) {
+        options.title = '';
+    }
+    if (options.vAxis == undefined) {
+        options.vAxis = {};
+    }
+    if (options.vAxis.title == undefined) {
+        options.vAxis.title = '';
+    }
+	
+	//TODO hAxis vs vAxis
+	// legent style
+	if (options.hAxis == undefined || options.hAxis.textStyle == undefined) {
+		font_style = { font: '11px Trebuchet MS, Verdana, sans-serif' };
+		font_size = 11;
+	} else {
+		font_style = {};
+		if (options.hAxis.textStyle.color != undefined) {
+			font_style.color = options.hAxis.textStyle.color;
+		}
+		
+		if (options.hAxis.textStyle.fontSize != undefined) {
+			font_style.font = options.hAxis.textStyle.fontSize + "px ";
+			font_size = options.hAxis.textStyle.fontSize;
+		} else {
+			font_size = 11;
+		}
+		
+		if (options.hAxis.textStyle.fontName != undefined) {
+			if (font_style.font != undefined) {
+				font_style.font += options.hAxis.textStyle.fontName;
+			} else {
+				font_style.font = '11px ' + options.hAxis.textStyle.fontName;
+			}
+		} else {
+			if (font_style.font != undefined) {
+				font_style.font += 'Trebuchet MS, Verdana, sans-serif';
+			}
+		}
+	}
+
     // auto rotated labels
     if (chart_type == "column" || chart_type == "line") {
         var longest_label = 0;
@@ -615,7 +658,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             longest_label = Math.max(longest_label, (data["rows"][i]["c"][0]["v"] + "").length);
         }
         
-        if (options.width / data["rows"].length < longest_label*10) { // TODO 10? how to get font-size?
+        if (options.width / data["rows"].length < longest_label*font_size) {
             xLabels.rotation = -45;
             xLabels.align = 'right';
         } else {
@@ -626,6 +669,8 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     
     var is_date = true;
     
+	options.categories = false;
+	
     // time data
     if (typeof(xLabels.type) == 'undefined') {
         is_date = false;
@@ -657,21 +702,6 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     // getting element
     var element = document.getElementById(elem_id);
     
-    // options
-    if (options == undefined) {
-        options = {};
-    }
-    if (options.title == undefined) {
-        options.title = '';
-    }
-    if (options.vAxis == undefined) {
-        options.vAxis = {};
-    }
-    if (options.vAxis.title == undefined) {
-        options.vAxis.title = '';
-    }
-    
-    
     // logarithmic scale
     var vAxis_type = 'linear';
     if (options.vAxis.logScale != undefined && options.vAxis.logScale == true) {
@@ -699,6 +729,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         options.show_legend = false;
     }
     
+    // TODO these are not real options parameters --> rename, out of the options variable
     options.legend_layout = 'vertical';
     options.legend_align = 'right';
     options.legend_verticalAlign = 'middle';
@@ -833,14 +864,18 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
                 rotation: xLabels.rotation,
                 align: xLabels.align,
                 step: skip_step,
-                formatter: xaxis_label
+                formatter: xaxis_label,
+				style: font_style
             },
-            dateTimeLabelFormats: options.dateTimeLabelFormats
+            dateTimeLabelFormats: options.dateTimeLabelFormats,
         },
         yAxis: {
             type: vAxis_type,
             title: {
                 text: options.vAxis.title
+            },
+			labels: {
+				style: font_style
             },
         },
         tooltip: {
