@@ -693,11 +693,12 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     
     // display marker on line
     var marker_enable = true;
-    //TODO dont check just first series
-	//TODO take graph width as a factor
-    if (d[0].data.length > 80) {
-        marker_enable = false;
-    }
+    for (var i = 0; i < d.length; i++) {
+		if (d[i].data.length > 80) {
+			marker_enable = false;
+			break;
+		}
+	}
 
     // getting element
     var element = document.getElementById(elem_id);
@@ -748,7 +749,6 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     if (options.dateTimeLabelFormats == undefined) {
         options.dateTimeLabelFormats = {
             //default
-
             millisecond: '%H:%M:%S',
             second: '%H:%M:%S',
             minute: '%H:%M',
@@ -757,17 +757,6 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             week: '%e. %b',
             month: '%b \'%y',
             year: '%Y'
-
-            /*
-            millisecond: '%e. %b',
-            second: '%e. %b',
-            minute: '%e. %b',
-            hour: '%e. %b',
-            day: '%e. %b',
-            week: '%e. %b',
-            month: '%b \'%y',
-            year: '%Y'
-            */
         };
     }
     
@@ -782,8 +771,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     var xaxis_label = undefined;
     if (xLabels.type != "datetime") {
         xaxis_label = function() {
-            //TODO font-size has no value
-            var wrap_edge = 19;
+            wrap_edge = 19*font_size/11;
             if (options.height/this.value.length < wrap_edge) {
                 return this.value.substr(0, Math.floor(options.height/wrap_edge -5) ) + "...";
             } else {
