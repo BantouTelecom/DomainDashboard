@@ -262,7 +262,7 @@ OGRA.prototype.data_dygraphs = function(data) {
 
     for (var r in data["rows"]) {
         for (var v in data["rows"][r]["c"]) {
-            result += data["rows"][r]["c"][v]["v"] + ","; //TODO "c" and "v" ???
+            result += data["rows"][r]["c"][v]["v"] + ",";
         }
         result += "\n";
     }
@@ -317,7 +317,13 @@ OGRA.prototype.data_high = function(data, chart_type) {
                 
                 if (dd) {
                     xLabels.type = 'datetime';
-                    result[v-1]['data'].push([ data["rows"][r]["c"][0]["v"].getTime(), data["rows"][r]["c"][v]["v"] ]);
+					var myDate = data["rows"][r]["c"][0]["v"];
+					if ( typeof(myDate) == 'string' ) {
+						myDate = eval('new ' + myDate);
+					}
+					myDate = myDate.getTime()
+					
+                    result[v-1]['data'].push([ myDate, data["rows"][r]["c"][v]["v"] ]);
                 } else {
                     result[v-1]['data'].push(data["rows"][r]["c"][v]["v"]);
                 }
@@ -679,7 +685,6 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         xLabels.align = 'center';
     }
     
-    //TODO upgrade
     // reducing density of labels
     if (options.width/xLabels.length < 20) {
         var skip_step = 2;
@@ -889,7 +894,10 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
                 }
             },
             series: {
-                stacking: stacking
+                stacking: stacking,
+                animation: {
+                    duration: options.animation_duration
+                }
             }
         },
         series: d
