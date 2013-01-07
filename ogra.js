@@ -420,7 +420,7 @@ OGRA.prototype.graph = function(elem_id, data, chart_type, type, options) {
         }
         options.height = element.offsetHeight;
     }
-
+    
     // do graph
     if (type == null || type == "google") {
         this.graph_google(elem_id, data, chart_type, options);
@@ -568,7 +568,7 @@ OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options) {
     this.remove_loading(element);
     
     // creating graph
-    new Dygraph.GVizChart(element).draw(d, {title: options.title, colors: options.colors});
+    new Dygraph.GVizChart(element).draw(d, {title: options.title, colors: options.colors, width: options.width, height: options.height});
     
     // callback
     if ( typeof(options.callback) == "function" && typeof(options.callback_args) == "object") {
@@ -769,7 +769,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     
     // x axis label
     var xaxis_label = undefined;
-    if (xLabels.type != "datetime") {
+    if (xLabels.type != "datetime" && xLabels.rotation != 0) {
         xaxis_label = function() {
             wrap_edge = 19*font_size/11;
             if (options.height/this.value.length < wrap_edge) {
