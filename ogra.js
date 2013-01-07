@@ -66,7 +66,7 @@ function OGRA () {
 
 // Something goes wrong...
 OGRA.prototype.error = function(msg, elem_id) {
-    console.log("OGRA Error: " + msg);
+    //console.log("OGRA Error: " + msg);
     
     if (elem_id == null) {
         return;
@@ -111,7 +111,7 @@ OGRA.prototype.import_google = function() {
         return true;
     }
     
-    console.log("Loading: Google API");
+    //console.log("Loading: Google API");
     
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_GOOGLE);
@@ -138,7 +138,7 @@ OGRA.prototype.import_google = function() {
 
 OGRA.prototype.import_google_lib = function(args) {
     
-    console.log("Loading: ", args);
+    //console.log("Loading: ", args);
     
     var that = this;
 
@@ -161,7 +161,7 @@ OGRA.prototype.import_dygraphs = function() {
         return true;
     }
 
-    console.log("Loading: Dygraphs API");
+    //console.log("Loading: Dygraphs API");
 
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_DYGRAPHS);
@@ -190,7 +190,7 @@ OGRA.prototype.import_high = function() {
         return;
     }
     
-    console.log("Loading: HighCharts API");
+    //console.log("Loading: HighCharts API");
     
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_HIGH);
@@ -206,7 +206,7 @@ OGRA.prototype.import_flot = function() {
         return true;
     }
     
-    console.log("Loading: Flot Charts API");
+    //console.log("Loading: Flot Charts API");
     
     // import jQuery
     if (this.imported["jquery"] == false) {
@@ -233,7 +233,7 @@ OGRA.prototype.import_jquery = function() {
         return true;
     }
     
-    console.log("Loading: jQuery");
+    //console.log("Loading: jQuery");
     
     var script = document.createElement('script');
     script.setAttribute('src', this.URL_JQUERY);
@@ -669,13 +669,13 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     
     var is_date = true;
     
-	options.categories = false;
+	categories = false;
 	
     // time data
     if (typeof(xLabels.type) == 'undefined') {
         is_date = false;
         xLabels.type = 'linear';
-        options.categories = xLabels;
+        categories = xLabels;
     } else if (chart_type == "column" || chart_type == "line") {
         xLabels.rotation = 0;
         xLabels.align = 'center';
@@ -847,7 +847,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             title: {
                 text: options.hAxis.title
             },
-            categories: options.categories,
+            categories: categories,
             labels: {
                 rotation: xLabels.rotation,
                 align: xLabels.align,
