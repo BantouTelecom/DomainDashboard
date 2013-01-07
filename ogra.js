@@ -253,7 +253,6 @@ OGRA.prototype.data_google = function(data) {
 // Converts data from OGRA format to DyGraphs format.
 OGRA.prototype.data_dygraphs = function(data) {
         
-    //TODO convert data
     var result = "";
 
     for (var c in data["cols"]) {
@@ -268,7 +267,6 @@ OGRA.prototype.data_dygraphs = function(data) {
         result += "\n";
     }
     
-    //TODO return false in case of error
     return result;
 }
 
@@ -725,20 +723,19 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     }
     
     
-    options.show_legend = true;
+    show_legend = true;
     if (d.length < 2) {
-        options.show_legend = false;
+        show_legend = false;
     }
     
-    // TODO these are not real options parameters --> rename, out of the options variable
-    options.legend_layout = 'vertical';
-    options.legend_align = 'right';
-    options.legend_verticalAlign = 'middle';
+    legend_layout = 'vertical';
+    legend_align = 'right';
+    legend_verticalAlign = 'middle';
     
     if (options.width < 550) {
-        options.legend_layout = 'horizontal';
-        options.legend_align = 'center';
-        options.legend_verticalAlign = 'bottom';
+        legend_layout = 'horizontal';
+        legend_align = 'center';
+        legend_verticalAlign = 'bottom';
     }
 
     // remove loading
@@ -833,10 +830,10 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
             enabled: false,
         },
         legend: {
-            enabled: options.show_legend,
-            layout: options.legend_layout,
-            align: options.legend_align,
-            verticalAlign: options.legend_verticalAlign,
+            enabled: show_legend,
+            layout: legend_layout,
+            align: legend_align,
+            verticalAlign: legend_verticalAlign,
         },
         title: {
             text: options.title
