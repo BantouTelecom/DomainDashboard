@@ -1,10 +1,10 @@
 /*
 
-OGRA library
+OGRA JS library
 
-Author: Opi Danihelka
+Author: Opi Danihelka (jan.danihelka@nic.cz)
 
-Developed by: CZ.NIC Labs 2012 (https://labs.nic.cz)
+Developed by: CZ.NIC Labs 2013 (https://labs.nic.cz)
 
 */
 
@@ -252,6 +252,21 @@ OGRA.prototype.data_google = function(data) {
 
 // Converts data from OGRA format to DyGraphs format.
 OGRA.prototype.data_dygraphs = function(data) {
+    
+	// date data
+	var dd = false;
+	
+	for (var c = 0; c < data["cols"].length; c++) {
+		if (data["cols"][c]["type"] == "date") {
+			dd = true;
+			break;
+		}
+	}
+	
+	if (dd == false) {
+		// no datetime series for Dygraphs -> wrong data
+		return false;
+	}
         
     var result = "";
 
@@ -262,7 +277,18 @@ OGRA.prototype.data_dygraphs = function(data) {
 
     for (var r in data["rows"]) {
         for (var v in data["rows"][r]["c"]) {
-            result += data["rows"][r]["c"][v]["v"] + ",";
+			
+			// datetime data
+			if (dd && v == 0) {
+				var myDate = data["rows"][r]["c"][v]["v"];
+				if ( typeof(myDate) == 'string' ) {
+					myDate = eval('new ' + myDate);
+				}
+				
+				result += myDate + ",";
+			} else {
+				result += data["rows"][r]["c"][v]["v"] + ",";
+			}
         }
         result += "\n";
     }
@@ -624,7 +650,6 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         options.vAxis.title = '';
     }
 	
-	//TODO hAxis vs vAxis
 	// legent style
 	if (options.hAxis == undefined || options.hAxis.textStyle == undefined) {
 		font_style = { font: '11px Trebuchet MS, Verdana, sans-serif' };
