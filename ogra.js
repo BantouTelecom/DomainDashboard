@@ -21,7 +21,6 @@ function OGRA () {
     // TODO
     //this.URL_FLOT = "http://www.benjaminbuffet.com/public/js/jquery.flot.js";
     //this.URL_FLOT_BAR = "http://www.benjaminbuffet.com/public/js/jquery.flot.orderBars.js";
-
     
     // list of already imported libraries
     this.imported = {};
@@ -45,7 +44,8 @@ function OGRA () {
     }
     
     this.imported["flot"] = false;
-    
+    this.imported["flot_pie"] = false;
+
     // check if jQuery is imported
     if (typeof(jQuery) == 'undefined') {
         this.imported["jquery"] = false;
@@ -206,8 +206,6 @@ OGRA.prototype.import_flot = function() {
         return true;
     }
     
-    //console.log("Loading: Flot Charts API");
-    
     // import jQuery
     if (this.imported["jquery"] == false) {
         this.import("jquery");
@@ -217,13 +215,31 @@ OGRA.prototype.import_flot = function() {
     script.setAttribute('src', this.URL_FLOT);
     script.setAttribute('type', 'text/javascript');
     document.getElementsByTagName('head')[0].appendChild(script);
-    
-    var script = document.createElement('script');
-    script.setAttribute('src', this.URL_FLOT_PIE);
-    script.setAttribute('type', 'text/javascript');
-    document.getElementsByTagName('head')[0].appendChild(script);
-    
+	
     this.imported["flot"] = true;
+	
+	this.import_flot_pie();
+	
+}
+
+OGRA.prototype.import_flot_pie = function() {
+
+	// check if enviroment is ready to load plugin
+	if (typeof(jQuery) == 'undefined' || typeof(jQuery.plot) == 'undefined' || typeof(jQuery.plot.plugins) == 'undefined') {
+		var that = this;
+		setTimeout(function() {
+				that.import_flot_pie();
+			}, this.retry_time);
+		return;
+	}
+	
+	// importing of plugin
+	var script = document.createElement('script');
+	script.setAttribute('src', this.URL_FLOT_PIE);
+	script.setAttribute('type', 'text/javascript');
+	document.getElementsByTagName('head')[0].appendChild(script);
+	
+	this.imported["flot_pie"] = true;
 }
 
 // jQuery import
@@ -366,6 +382,21 @@ OGRA.prototype.data_flot = function(data, chart_type) {
     
     var result = [];
     var xLabels = [];
+	xLabels.type = undefined;
+	
+	
+	// date data
+	var dd = false;
+	var dd_values = [];
+	var dd_index = 0;
+	
+	for (var c = 0; c < data["cols"].length; c++) {
+		if (data["cols"][c]["type"] == "date") {
+			dd = true;
+			xLabels.type = 'datetime';
+			break;
+		}
+	}
     
     if (chart_type == "pie") {
         // check validity
@@ -385,14 +416,34 @@ OGRA.prototype.data_flot = function(data, chart_type) {
 
         
         for (var r in data["rows"]) {
-            xLabels.push([r, data["rows"][r]["c"][0]["v"] ]);
+			
+			// datetime data
+			if (dd) {
+				var myDate = data["rows"][r]["c"][0]["v"];
+				if ( typeof(myDate) == 'string' ) {
+					myDate = eval('new ' + myDate);
+				}
+								
+				dd_values.push(myDate.getTime());
+				
+			} else {
+				xLabels.push([r, data["rows"][r]["c"][0]["v"] ]);
+			}
+			
+			// for each series
             for (var v = 1; v < data["rows"][r]["c"].length; v++) {
-                // good
-                result[v-1]['data'].push([ r*1, data["rows"][r]["c"][v]["v"] ]);
+				
+                // check datetime
+                if (dd) {
+					result[v-1]['data'].push([ dd_values[dd_index], data["rows"][r]["c"][v]["v"] ]);
+				} else {
+					result[v-1]['data'].push([ r*1, data["rows"][r]["c"][v]["v"] ]);
+				}
             }
+            dd_index += 1;
         }
     }
-
+    
     return {"result": result, "xLabels": xLabels};
 }
 
@@ -937,13 +988,14 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
 }
 
 OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options) {
-    
+    	
     // import Flot charts
     if (this.imported["flot"] == false) {
         this.import_flot();
     }
     
-    if (typeof(jQuery) == 'undefined' || typeof(jQuery.plot) == 'undefined') {
+    if (this.imported["flot_pie"] == false) {
+				
         var that = this;
         setTimeout(function() {
             that.graph_flot(elem_id, data, chart_type, options);
@@ -951,6 +1003,27 @@ OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options) {
         return;
     }
     
+    // pie plugin check
+    if (chart_type == 'pie') {
+		
+		var found = false;
+		
+		for (var i = 0; i < jQuery.plot.plugins.length; i++) {
+			if (jQuery.plot.plugins[i].name == 'pie') {
+				found = true;
+			}
+			break;
+		}
+				
+		if (found == false) {
+			var that = this;
+			setTimeout(function() {
+				that.graph_flot(elem_id, data, chart_type, options);
+			}, this.retry_time);
+			return;
+		}
+	}
+	
     // putting data to current format
     var flot_format = this.data_flot(data, chart_type);
     
@@ -976,8 +1049,16 @@ OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options) {
     // remove loading
     this.remove_loading(element);
     
+	// datetime axis
+	var xaxis_format = {};
+	
+	if (xLabels.type == 'datetime') {
+		xaxis_format = {mode: "time"};
+	} else {
+		xaxis_format = {labelAngle: 45, ticks: xLabels};
+	}
+
     // creating graph
-    
     if (chart_type == "column" || chart_type == "bar") {
         // bar & column
         for (var i = 0; i < d.length; i++) {
@@ -987,13 +1068,17 @@ OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options) {
             //d[i].multiplebars = true;
         }
         
-        jQuery.plot(element, d, {xaxis: {labelAngle: 45, ticks: xLabels}, colors: options.colors} );
+        jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors} );
     } else if (chart_type == "pie") {
         // pie
         jQuery.plot(element, d, { series: {pie: {show: true, label:{ threshold: 0.02} } }, legend: {show: false }, colors: options.colors});
     } else {
         // line
-        jQuery.plot(element, d, {xaxis: {labelAngle: 45, ticks: xLabels}, colors: options.colors});
+        if (xLabels.type == 'datetime') {
+			jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors});
+		} else {
+			jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors});
+		}
     }
         
     // callback
