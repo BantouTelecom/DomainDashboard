@@ -897,6 +897,15 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         }
     });
     
+	// credits
+	if (options.credits_text == undefined) {
+		options.credits_text = "";
+	}
+	
+	if (options.credits_href == undefined) {
+		options.credits_href = "";
+	}
+	
     
     // creating graph
     chart = new Highcharts.Chart({
@@ -908,7 +917,8 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         },
         colors: options.colors,
         credits: {
-            enabled: false,
+			text: options.credits_text,
+			href: options.credits_href,
         },
         legend: {
             enabled: show_legend,
