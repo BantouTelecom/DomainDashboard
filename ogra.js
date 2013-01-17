@@ -450,9 +450,6 @@ OGRA.prototype.data_flot = function(data, chart_type) {
 
 // New graph is created from given data and inserted into html element specified by id.
 OGRA.prototype.graph = function(elem_id, data, chart_type, type, options) {
-    
-	// return reference to chart
-    var return_value = {};
 	
     // check existence of element - elem_id
     var element = document.getElementById(elem_id);
@@ -477,8 +474,8 @@ OGRA.prototype.graph = function(elem_id, data, chart_type, type, options) {
 
     // OGRA data format / url for Ajax
     if (typeof(data) == "string") {
-        this.graph_ajax(elem_id, data, chart_type, type, options, return_value);
-        return return_value;
+        this.graph_ajax(elem_id, data, chart_type, type, options);
+        return;
     } else if (typeof(data) != "object") {
         this.error("Bad data type of input data.", elem_id);
         return false;
@@ -507,16 +504,16 @@ OGRA.prototype.graph = function(elem_id, data, chart_type, type, options) {
         
     // do graph
     if (type == null || type == "google") {
-        this.graph_google(elem_id, data, chart_type, options, return_value);
+        this.graph_google(elem_id, data, chart_type, options);
     } else if (type == "dygraphs") {
-        this.graph_dygraphs(elem_id, data, chart_type, options, return_value);
+        this.graph_dygraphs(elem_id, data, chart_type, options);
     } else if (type == "high") {
-        this.graph_high(elem_id, data, chart_type, options, return_value);
+        this.graph_high(elem_id, data, chart_type, options);
     } else if (type == "flot") {
-        this.graph_flot(elem_id, data, chart_type, options, return_value);
+        this.graph_flot(elem_id, data, chart_type, options);
     }
     
-    return return_value;
+    return;
 }
 
 OGRA.prototype.checkSupportedType = function(type, chart_type) {
@@ -549,7 +546,7 @@ OGRA.prototype.checkSupportedType = function(type, chart_type) {
     return 0;
 }
 
-OGRA.prototype.graph_google = function(elem_id, data, chart_type, options, return_value) {
+OGRA.prototype.graph_google = function(elem_id, data, chart_type, options) {
         
     // import Google Charts
     if (this.imported["google"] == false) {
@@ -563,7 +560,7 @@ OGRA.prototype.graph_google = function(elem_id, data, chart_type, options, retur
     if (typeof(google) == 'undefined') {
         var that = this;
         setTimeout(function() {
-            that.graph_google(elem_id, data, chart_type, options, return_value);
+            that.graph_google(elem_id, data, chart_type, options);
         }, this.retry_time);
         return;
     }
@@ -584,7 +581,7 @@ OGRA.prototype.graph_google = function(elem_id, data, chart_type, options, retur
     if (typeof(google.visualization) == 'undefined' || typeof(google.visualization.DataTable) == 'undefined') {
         var that = this;
         setTimeout(function() {
-            that.graph_google(elem_id, data, chart_type, options, return_value);
+            that.graph_google(elem_id, data, chart_type, options);
         }, this.retry_time);
         return;
     }
@@ -617,14 +614,21 @@ OGRA.prototype.graph_google = function(elem_id, data, chart_type, options, retur
     chart.draw(dt, options);
 
     // callback
-    if ( typeof(options.callback) == "function" && typeof(options.callback_args) == "object") {
+	if ( typeof(options.callback_args) != "object" ) {
+	 	options.callback_args = [];
+	}
+	
+	// return reference to chart
+	options.callback_args.unshift(chart);
+	
+    if ( typeof(options.callback) == "function" ) {
         options.callback.apply(undefined, options.callback_args);
     }
 
     return true;
 }
 
-OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options, return_value) {
+OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options) {
     
     // import Dygraphs
     if (this.imported["dygraphs"] == false) {
@@ -634,7 +638,7 @@ OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options, ret
     if (typeof(Dygraph) == 'undefined') {
         var that = this;
         setTimeout(function() {
-            that.graph_dygraphs(elem_id, data, chart_type, options, return_value);
+            that.graph_dygraphs(elem_id, data, chart_type, options);
         }, this.retry_time);
         return;
     }
@@ -653,17 +657,25 @@ OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options, ret
     this.remove_loading(element);
     
     // creating graph
-    new Dygraph.GVizChart(element).draw(d, {title: options.title, colors: options.colors, width: options.width, height: options.height});
-    
+    var chart = new Dygraph.GVizChart(element);
+	chart.draw(d, {title: options.title, colors: options.colors, width: options.width, height: options.height});
+	
     // callback
-    if ( typeof(options.callback) == "function" && typeof(options.callback_args) == "object") {
+	if ( typeof(options.callback_args) != "object" ) {
+	 	options.callback_args = [];
+	}
+	
+	// return reference to chart
+	options.callback_args.unshift(chart);
+	
+    if ( typeof(options.callback) == "function" ) {
         options.callback.apply(undefined, options.callback_args);
     }
-    
+
     return true;
 }
 
-OGRA.prototype.graph_high = function(elem_id, data, chart_type, options, return_value) {
+OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
 		
     // import HighCharts
     if (this.imported["high"] == false) {
@@ -673,7 +685,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options, return_
     if (typeof(Highcharts) == 'undefined' || typeof(jQuery) == 'undefined' || typeof(Highcharts.Chart) == 'undefined') {
         var that = this;
         setTimeout(function() {
-            that.graph_high(elem_id, data, chart_type, options, return_value);
+            that.graph_high(elem_id, data, chart_type, options);
         }, this.retry_time);
         return;
     }
@@ -993,19 +1005,23 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options, return_
         series: d
     });
     
+
     // callback
-    if ( typeof(options.callback) == "function" && typeof(options.callback_args) == "object" ) {
+	if ( typeof(options.callback_args) != "object" ) {
+	 	options.callback_args = [];
+	}
+	
+	// return reference to chart
+	options.callback_args.unshift(chart);
+	
+    if ( typeof(options.callback) == "function" ) {
         options.callback.apply(undefined, options.callback_args);
     }
-    
-    //TODO
-    // set return value
-    return_value.chart = chart;
-    
+
     return true;
 }
 
-OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options, return_value) {
+OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options) {
     	
     // import Flot charts
     if (this.imported["flot"] == false) {
@@ -1016,7 +1032,7 @@ OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options, return_
 				
         var that = this;
         setTimeout(function() {
-            that.graph_flot(elem_id, data, chart_type, options, return_value);
+            that.graph_flot(elem_id, data, chart_type, options);
         }, this.retry_time);
         return;
     }
@@ -1036,7 +1052,7 @@ OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options, return_
 		if (found == false) {
 			var that = this;
 			setTimeout(function() {
-				that.graph_flot(elem_id, data, chart_type, options, return_value);
+				that.graph_flot(elem_id, data, chart_type, options);
 			}, this.retry_time);
 			return;
 		}
@@ -1086,30 +1102,34 @@ OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options, return_
             //d[i].multiplebars = true;
         }
         
-			jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors} );
-			//jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors, multiplebars: true} );
+		var chart = jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors} );
+		//jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors, multiplebars: true} );
+		
     } else if (chart_type == "pie") {
         // pie
-        jQuery.plot(element, d, { series: {pie: {show: true, label:{ threshold: 0.02} } }, legend: {show: false }, colors: options.colors});
+        var chart = Query.plot(element, d, { series: {pie: {show: true, label:{ threshold: 0.02} } }, legend: {show: false }, colors: options.colors});
     } else {
         // line
-        if (xLabels.type == 'datetime') {
-			jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors});
-		} else {
-			jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors});
-		}
+		var chart = jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors});
     }
         
     // callback
-    if ( typeof(options.callback) == "function" && typeof(options.callback_args) == "object") {
+	if ( typeof(options.callback_args) != "object" ) {
+	 	options.callback_args = [];
+	}
+	
+	// return reference to chart
+	options.callback_args.unshift(chart);
+	
+    if ( typeof(options.callback) == "function" ) {
         options.callback.apply(undefined, options.callback_args);
     }
-    
+
     return true;
 }
 
 // Ajax calling...
-OGRA.prototype.graph_ajax = function(elem_id, data_url, chart_type, type, options, return_value) {
+OGRA.prototype.graph_ajax = function(elem_id, data_url, chart_type, type, options) {
     
     // Import library is required in case of using Ajax to call graph method.
     this.import(type);
@@ -1122,17 +1142,15 @@ OGRA.prototype.graph_ajax = function(elem_id, data_url, chart_type, type, option
     if (typeof(jQuery) == 'undefined') {
         var that = this;
         setTimeout(function() {
-            that.graph_ajax(elem_id, data_url, chart_type, type, options, return_value);
+            that.graph_ajax(elem_id, data_url, chart_type, type, options);
         }, this.retry_time);
         return;
     }
     
-    //TODO test return_value
-    
     //
     var that = this;
     $.getJSON(data_url, function(data){
-        return_value = that.graph(elem_id, data, chart_type, type, options);
+        that.graph(elem_id, data, chart_type, type, options);
     }).error(function() {
         that.error("Bad URL '" + data_url + "' for Ajax requested.", elem_id);
     });
