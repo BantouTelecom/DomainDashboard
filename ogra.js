@@ -13,14 +13,10 @@ function OGRA () {
     this.URL_JQUERY = "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js";
     this.URL_GOOGLE = "https://www.google.com/jsapi";
     this.URL_DYGRAPHS = "http://dygraphs.com/dygraph-combined.js";
-    this.URL_HIGH = "http://code.highcharts.com/highcharts.src.js";
-    //this.URL_FLOT = "https://raw.github.com/flot/flot/master/jquery.flot.js";
+    this.URL_HIGH = "http://code.highcharts.com/highcharts.js";
     this.URL_FLOT = "https://raw.github.com/paradoxxxzero/flot/28f2377382b3af97c82cb3ebc081140b49fa9579/jquery.flot.js";
     this.URL_FLOT_PIE = "https://raw.github.com/flot/flot/master/jquery.flot.pie.js";
 
-    // TODO
-    //this.URL_FLOT = "http://www.benjaminbuffet.com/public/js/jquery.flot.js";
-    //this.URL_FLOT_BAR = "http://www.benjaminbuffet.com/public/js/jquery.flot.orderBars.js";
     
     // list of already imported libraries
     this.imported = {};
@@ -55,8 +51,8 @@ function OGRA () {
             this.imported["flot"] = true;
         }
     }
-        
-
+    
+	// interval between each check for loaded library
     this.retry_time = 50;
     
     // graphs waiting for importing of graphics library
@@ -64,7 +60,7 @@ function OGRA () {
     
 }
 
-// Something goes wrong...
+// Something goes wrong... and user should know about it.
 OGRA.prototype.error = function(msg, elem_id) {
     //console.log("OGRA Error: " + msg);
     
@@ -516,6 +512,7 @@ OGRA.prototype.graph = function(elem_id, data, chart_type, type, options) {
     return;
 }
 
+// check if wanted type of chart is available in given graphical library
 OGRA.prototype.checkSupportedType = function(type, chart_type) {
     
     if (type == null) {
@@ -546,6 +543,7 @@ OGRA.prototype.checkSupportedType = function(type, chart_type) {
     return 0;
 }
 
+// Creating graph by Google Charts
 OGRA.prototype.graph_google = function(elem_id, data, chart_type, options) {
         
     // import Google Charts
@@ -628,6 +626,7 @@ OGRA.prototype.graph_google = function(elem_id, data, chart_type, options) {
     return true;
 }
 
+// Creating graph by Dygraphs
 OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options) {
     
     // import Dygraphs
@@ -675,6 +674,7 @@ OGRA.prototype.graph_dygraphs = function(elem_id, data, chart_type, options) {
     return true;
 }
 
+// Creating graph by HighCharts
 OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
 		
     // import HighCharts
@@ -1004,8 +1004,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
         },
         series: d
     });
-    
-
+	
     // callback
 	if ( typeof(options.callback_args) != "object" ) {
 	 	options.callback_args = [];
@@ -1021,6 +1020,7 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
     return true;
 }
 
+// Creating graph by Flot JS
 OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options) {
     	
     // import Flot charts
@@ -1097,13 +1097,9 @@ OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options) {
         // bar & column
         for (var i = 0; i < d.length; i++) {
             d[i].bars = {show: true, barWidth: 0.3, align: "center"};
-            //TODO bug - bar chart with multiple series 
-            //d[i].bars = {order: 0, show: true, barWidth: 0.3, align: "center"};
-            //d[i].multiplebars = true;
         }
         
 		var chart = jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors} );
-		//jQuery.plot(element, d, { xaxis: xaxis_format, colors: options.colors, multiplebars: true} );
 		
     } else if (chart_type == "pie") {
         // pie
@@ -1128,7 +1124,7 @@ OGRA.prototype.graph_flot = function(elem_id, data, chart_type, options) {
     return true;
 }
 
-// Ajax calling...
+// Ajax gets data from given URL
 OGRA.prototype.graph_ajax = function(elem_id, data_url, chart_type, type, options) {
     
     // Import library is required in case of using Ajax to call graph method.
