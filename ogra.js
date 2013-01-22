@@ -9,14 +9,19 @@ Developed by: CZ.NIC Labs (https://labs.nic.cz)
 */
 
 function OGRA () {
-    
-    this.URL_JQUERY = "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js";
-    this.URL_GOOGLE = "https://www.google.com/jsapi";
-    this.URL_DYGRAPHS = "http://dygraphs.com/dygraph-combined.js";
-    this.URL_HIGH = "http://code.highcharts.com/highcharts.js";
-    this.URL_FLOT = "https://raw.github.com/paradoxxxzero/flot/28f2377382b3af97c82cb3ebc081140b49fa9579/jquery.flot.js";
-    this.URL_FLOT_PIE = "https://raw.github.com/flot/flot/master/jquery.flot.pie.js";
-
+	
+	var prefix = "http:";
+	if (document.location.protocol == "https:") {
+		prefix = "https:";
+	}
+	
+    this.URL_JQUERY = prefix + "//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js";
+    this.URL_GOOGLE = prefix + "//www.google.com/jsapi";
+    this.URL_DYGRAPHS = prefix + "//dygraphs.com/dygraph-combined.js";
+    this.URL_HIGH = prefix + "//code.highcharts.com/highcharts.js";
+    this.URL_FLOT = prefix + "//raw.github.com/paradoxxxzero/flot/28f2377382b3af97c82cb3ebc081140b49fa9579/jquery.flot.js";
+    this.URL_FLOT_PIE = prefix + "//raw.github.com/flot/flot/master/jquery.flot.pie.js";
+	
     
     // list of already imported libraries
     this.imported = {};
@@ -1002,7 +1007,10 @@ OGRA.prototype.graph_high = function(elem_id, data, chart_type, options) {
                 }
             }
         },
-        series: d
+        series: d,
+		exporting: {
+			width: options.width
+		}
     });
 	
     // callback
