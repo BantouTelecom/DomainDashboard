@@ -4,7 +4,7 @@ OGRA JS library
 
 Author: Opi Danihelka (jan.danihelka@nic.cz)
 
-Developed by: CZ.NIC Labs 2013 (https://labs.nic.cz)
+Developed by: CZ.NIC Labs (https://labs.nic.cz)
 
 */
 
