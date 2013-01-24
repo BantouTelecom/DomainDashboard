@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-        <title>OGRA JS library</title>
+        <title>OGRA library</title>
 
 		<link rel="stylesheet" type="text/css" href="css/style.css"/>
 
@@ -20,7 +20,7 @@
 				</div>
 
 
-				<h1>OGRA JS library</h1>
+				<h1>OGRA library</h1>
 				
 				<ul id="navigation">
 					<li><a href="index.html">About OGRA</a></li>
@@ -36,62 +36,54 @@
 
 			<h2>Initialization of OGRA library</h2>
 
-			<p>Write down given line of code to the head of your HTML file where you want to draw a chart:</p>
+			<p>First step in using OGRA is to include it into your page by inserting the following code to the head of your HTML:</p>
 
-			<pre>
-				
-	&lt;script type="text/javascript" src="https://raw.github.com/CZNIC-Labs/ogra/master/ogra.js"&gt;&lt;/script&gt;
-			</pre>
+			<pre>&lt;script type="text/javascript" src="https://raw.github.com/CZNIC-Labs/ogra/master/ogra.js"&gt;&lt;/script&gt;</pre>
 
-			<p>OGRA will automatically import all required JS libraries of the third parties (example: Google Charts, High Charts, jQuery...) in case it's required for creating of your chart.</p>
+			<p>OGRA will automatically import all required third party javascript libraries (e.g.: Google Charts, High Charts, jQuery...) in case it is required for your chart.</p>
 
 
 
 			<h2>OGRA data format</h2>
 
-			<p>For drawing charts you need to have data in valid OGRA format. OGRA format is fully compatible with format used in <a href="https://developers.google.com/chart/">Google Charts</a>. In case that you want to draw a chart in different graphic library other than Google Charts, you don't have to change format of data anymore. OGRA will change it for you automatically.</p>
+			<p>For drawing charts you need to have data in format compatible with OGRA. OGRA uses the Google Charts <a href="https://developers.google.com/chart/interactive/docs/datatables_dataviews">DataTable format</a>, so if you already have data in this format, you do not need to change anything. Even when you use a graphic library not compatible with DataTable format, you do not have to convert your data - OGRA will do it for you automatically.</p>
 
-			<p>For simple generating of OGRA format on the server side, we would recommend to use <a href="http://code.google.com/p/google-visualization-python/source/browse/trunk/gviz_api.py">gviz_api.py</a><p>
-
-
-			<p>Example of data in OGRA format:</p>
-			<pre>
-	&lt;script type="text/javascript"&gt;
-
-	var data = {"cols":[{"id":"","label":"Year","pattern":"","type":"string"},{"id":"","label":"Sales","pattern":"","type":"number"},{"id":"","label":"Expenses","pattern":"","type":"number"}],"rows":[{"c":[{"v":"2004","f":null},{"v":1000,"f":null},{"v":400,"f":null}]},{"c":[{"v":"2005","f":null},{"v":1170,"f":null},{"v":460,"f":null}]},{"c":[{"v":"2006","f":null},{"v":660,"f":null},{"v":1120,"f":null}]},{"c":[{"v":"2007","f":null},{"v":1030,"f":null},{"v":540,"f":null}]}],"p":null};
-
-	&lt;/script&gt;
-			</pre>
-
-			<p>Data will be used in example below...</p>
+			<p>For easy generation of data in DataTable format on the server side, we would recommend to use <a href="http://code.google.com/p/google-visualization-python/source/browse/trunk/gviz_api.py">gviz_api.py</a></p>
 
 
-			<h2>Drawing of chart</h2>
+			<p>Example of data in DataTable format:</p>
+			<pre>&lt;script type="text/javascript"&gt;
 
-			<p>For drawing chart you need to call <b>Ogra.graph</b> method.</p>
+var data = {"cols":[{"id":"","label":"Year","pattern":"","type":"string"},
+                    {"id":"","label":"Sales","pattern":"","type":"number"},
+                    {"id":"","label":"Expenses","pattern":"","type":"number"}],
+            "rows":[{"c":[{"v":"2004","f":null},{"v":1000,"f":null},{"v":400,"f":null}]},
+                    {"c":[{"v":"2005","f":null},{"v":1170,"f":null},{"v":460,"f":null}]},
+                    {"c":[{"v":"2006","f":null},{"v":660,"f":null},{"v":1120,"f":null}]},
+                    {"c":[{"v":"2007","f":null},{"v":1030,"f":null},{"v":540,"f":null}]}],
+            "p":null};
+
+&lt;/script&gt;</pre>
+
+			<p>This data will be used in the example below&hellip;</p>
 
 
-			1. Initialization of OGRA JS:
-			<pre>
+			<h2>Drawing a chart</h2>
 
-	&lt;script type="text/javascript" src="https://raw.github.com/CZNIC-Labs/ogra/master/ogra.js"&gt;&lt;/script&gt;
-			</pre>
+			<p>For drawing a chart you need to call the <b>Ogra.graph</b> method.</p>
+
+
+			1. Initialization of OGRA:
+			<pre>&lt;script type="text/javascript" src="https://raw.github.com/CZNIC-Labs/ogra/master/ogra.js"&gt;&lt;/script&gt;</pre>
 
 			2. Create element for future chart:
-			<pre>
-
-	&lt;div id="elem_id" style="width: 500px; height: 300px;"&gt;&lt;/div&gt;
-			</pre>
+			<pre>&lt;div id="elem_id" style="width: 500px; height: 300px;"&gt;&lt;/div&gt;</pre>
 
 
 			3. Create chart:
-			<pre>
-	&lt;script type="text/javascript"&gt;
-
-	Ogra.graph("elem_id", data, "column", "google", {title: "My chart"});
-
-	&lt;/script&gt;
-			</pre>
+			<pre>&lt;script type="text/javascript"&gt;
+Ogra.graph("elem_id", data, "column", "google", {title: "My chart"});
+&lt;/script&gt;</pre>
 
 			<p><a target="_blank" href="http://jsfiddle.net/uWGLR/" >Try this example online!</a></p>
 
@@ -99,18 +91,15 @@
 
 			<h2>Syntax</h2>
 
-			<pre>
-
-	Ogra.graph(<b>element_id</b>, <b>data</b>, <b>chart_type</b>, <b>used_library</b>, <b>options</b>);
-			</pre>
+			<pre>Ogra.graph(<b>element_id</b>, <b>data</b>, <b>chart_type</b>, <b>used_library</b>, <b>options</b>);</pre>
 
 
 			<ul>
 				<li><b>element_id</b><br/>Type: String<br/> - Id of HTML element, where you want to draw a chart.</li>
-				<li><b>data</b><br/>Type: OGRA format / URL <br/> - Input data for given chart, data can be given as a JS object in OGRA format, or as URL. In case that URL is used, AJAX will try to obtain data from given URL.</li>
+				<li><b>data</b><br/>Type: OGRA format / URL <br/> - Input data for given chart, data can be given as a JS object in OGRA format, or as URL. In case that URL is used, OGRA will try to obtain data from the given URL using AJAX.</li>
 				<li><b>chart_type</b><br/>Type: String<br/> - Chart type (example.: "pie", "column", ...) Table of supported types for each graphical library is listed below.</li>
 				<li><b>used_library</b><br/>Type: String<br/> - Graphic library which should be used for drawing of chart (example.: "google", "high", ...).</li>
-				<li><b>options</b><br/>Type: Object<br/> - Optional parameter for additional setting of chart. (example.: {title: "Title of chart"} ). Possible options are descriped in chapter below.</li>
+				<li><b>options</b><br/>Type: Object<br/> - Optional parameter for additional settings of the chart. (example.: {title: "Title of chart"} ). Possible options are descriped in chapter below.</li>
 			</ul>
 
 
@@ -120,7 +109,7 @@
 			<p>List of supported additional parameters.</p>
 
 
-			<p>Take a look at <a target="_blank" href="http://jsfiddle.net/U7Sqc/">example of chart with a various options</a>.</p>
+			<p>Take a look at an <a target="_blank" href="http://jsfiddle.net/U7Sqc/">example of a chart with various options</a>.</p>
 
 			<p>Callback and chart reference:</p>
 			<ul>
@@ -128,13 +117,13 @@
 				<li><b>callback_args</b> - Array. Optional list of additional parameters for callback method.</li>
 			</ul>
 
-			<p>Most wanted parameters:</p>
+			<p>Most often used parameters:</p>
 			<ul>
 				<li><b>title</b> - String. Title of the chart.</li>
 				<li><b>width</b> - Number. Width of the chart element.</li>
 				<li><b>height</b> - Number. Height of the chart element.</li>
 				<li><b>colors</b> - Array. List of colors, which are used for series.</li>
-				<li><b>isStacked</b> - Boolean. By default is set to False. Setting parameter to True, causes column chart will display with stacked columns.</li>
+				<li><b>isStacked</b> - Boolean. By default is set to False. Setting parameter to True causes column chart will display with stacked columns.</li>
 			</ul>
 
 			<p>For the full list of possible options please visit <a href="https://developers.google.com/chart/interactive/docs/reference">Google Chart API reference</a>.</p>
@@ -145,7 +134,7 @@
 				<li><b>lang</b> - Object. Please read more about this parameter at <a target="_blank" href="http://api.highcharts.com/highcharts#lang">Highcharts API reference</a>.</li>
 				<li><b>animation_duration</b> - Number. Duration of startup animation (0 = disabled animations).</li>
 				<li><b>credits_text</b> - String. Text displayed on the right bottom corner.</li>
-				<li><b>credits_href</b> - URL String. URL link binded on click to credits_text</li>
+				<li><b>credits_href</b> - URL String. URL link bound on click to credits_text</li>
 			</ul>
 			
 
@@ -182,9 +171,9 @@
 
 			<h2>Offline charts</h2>
 
-			<p>For using OGRA in offline mode you have to download all required graphical libraries of third parties and import them, before initialization of OGRA. OGRA is checking namespace for required libraries during it's initialization. If required names are not defined, OGRA will try to download all required libraries from preset URLs.</p>
+			<p>To use OGRA in offline mode, you have to download all required third party libraries import them before initializing OGRA. OGRA is checking the namespaces of required libraries during its initialization. If required names are not defined, OGRA will try to download all required libraries from preset URLs.</p>
 
-			<p>You can also overwrite these preset URLs. <a target="_blank" href="http://jsfiddle.net/FqXsR/">Take a look at example.</a> </p>
+			<p>You can also override these preset URLs. <a target="_blank" href="http://jsfiddle.net/FqXsR/">Take a look at an example.</a> </p>
 
 
 
@@ -192,7 +181,7 @@
 
 			<p>In case of failure during creation of chart, the error message will be displayed on the position of planned chart. Error message contains short problem description.</p>
 
-			<p>Take a look at <a target="_blank" href="http://jsfiddle.net/xe9sY/">example with error message</a>.</p>
+			<p>Take a look at an <a target="_blank" href="http://jsfiddle.net/xe9sY/">example with error message</a>.</p>
 
 
 
