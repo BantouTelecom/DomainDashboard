@@ -311,10 +311,12 @@ OGRA.prototype.data_dygraphs = function(data) {
 		}
 	}
 	
+	/* NOPE
 	if (dd == false) {
 		// no datetime series for Dygraphs -> wrong data
 		return false;
 	}
+	*/
         
     var result = "";
 

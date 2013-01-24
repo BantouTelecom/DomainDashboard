@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>OGRA JS library</title>
+
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+        <script type="text/javascript" src="../../ogra.js"></script>
+
+    </head>
+    <body>
+        <div id="wrap">
+			<div id="wrap-head">
+				<div style="float: right">
+					<p><b>Author:</b> <a href="mailto:jan.danihelka@nic.cz">Opi Danihelka</a></p>
+					<p><b>Developed by:</b> <a href="https://labs.nic.cz">CZ.NIC Labs</a></p>
+					<p><b>Latest version:</b> <a href="https://github.com/CZNIC-Labs/ogra">OGRA Git repository</a></p>
+				</div>
+
+
+				<h1>OGRA JS library</h1>
+				
+				<ul id="navigation">
+					<li><a href="../index.html">About OGRA</a></li>
+					<li><a href="../api.html">API Documentation</a></li>
+					<li><a style="color: #fff;" href="../examples.html">Examples</a></li>
+					<li><a href="https://github.com/CZNIC-Labs/ogra">Download</a></li>
+				</ul>
+			</div>
+
+			<div id="wrap-body">
+
+			<h2>Example: Using of multiple chart libraries.</h2>
+
+			<p>You can use different graphical library for each chart. Please note that not all chart types are supported by each graphical library. For more informations visit API Documentation and take a look at table of supported chart types for each graphic library.</p>
+
+			<p>For best results we recommend you to use Google charts "<b>google</b>" or Highcharts "<b>high</b>".</p>
+
+			<h3>HTML:</h3>
+			<p>Import OGRA JS and create elements for future charts. Please note that you don't have to import any more javascript files with graphical libraries.</p>
+			<pre>
+
+	&lt;script type="text/javascript" src="https://raw.github.com/CZNIC-Labs/ogra/master/ogra.js"&gt;&lt;/script&gt;
+
+	&lt;div id="my_chart_1"&gt;&lt;/div&gt;
+	&lt;div id="my_chart_2"&gt;&lt;/div&gt;
+	&lt;div id="my_chart_3"&gt;&lt;/div&gt;
+	&lt;div id="my_chart_4"&gt;&lt;/div&gt;
+			</pre>
+
+
+			<h3>Javascript:</h3>
+			<p>Prepare your data and create chart.</p>
+			<pre>
+
+	var data = {"cols":[{"label":"Year", "type":"string"},{"label":"Sales", "type":"number"},{"label":"Expenses", "type":"number"}],"rows":[{"c":[{"v":"2004"},{"v":1000},{"v":400}]},{"c":[{"v":"2005"},{"v":1170},{"v":460}]},{"c":[{"v":"2006"},{"v":660},{"v":1120}]},{"c":[{"v":"2007"},{"v":1030},{"v":540}]}]};			
+
+	Ogra.graph("my_chart_1", data, "line", "google", {} );
+	Ogra.graph("my_chart_2", data, "line", "high", {} );
+	Ogra.graph("my_chart_3", data, "line", "dygraphs", {} );
+	Ogra.graph("my_chart_4", data, "line", "flot", {} );
+			</pre>
+
+
+			<h3>Result:</h3>
+			<div id="my_chart_1"></div>
+			<div id="my_chart_2"></div>
+			<div id="my_chart_3"></div>
+			<div id="my_chart_4"></div>
+
+			<script type="text/javascript">
+
+				var data = {"cols":[{"label":"Year", "type":"string"},{"label":"Sales", "type":"number"},{"label":"Expenses", "type":"number"}],"rows":[{"c":[{"v":"2004"},{"v":1000},{"v":400}]},{"c":[{"v":"2005"},{"v":1170},{"v":460}]},{"c":[{"v":"2006"},{"v":660},{"v":1120}]},{"c":[{"v":"2007"},{"v":1030},{"v":540}]}]};
+
+				Ogra.graph("my_chart_1", data, "line", "google", {} );
+				Ogra.graph("my_chart_2", data, "line", "high", {} );
+				Ogra.graph("my_chart_3", data, "line", "dygraphs", {} );
+				Ogra.graph("my_chart_4", data, "line", "flot", {} );
+			</script>
+
+
+			<p style="float: left;"><a target="_blank" href="http://jsfiddle.net/T64nf/">Edit in jsFiddle</a></p>
+			<p style="float: right;"><a href="../examples.html">More examples</a></p>
+
+			
+			</div>
+			<div id="wrap-tail">
+				<hr/>
+				<a target="_blank" href="http://www.nic.cz/"><img alt="CZ.NIC" src="../img/cznic.png" style="width: 200px; float: right" /></a>
+				<p>© 2013 CZ.NIC Labs</p>
+			</div>
+		</div>
+    </body>
+</html>
