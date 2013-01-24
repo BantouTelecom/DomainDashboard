@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ============================
 
-OGRA JS library
+OGRA library
 
 Author: Opi Danihelka (jan.danihelka@nic.cz)
 
@@ -291,14 +291,14 @@ OGRA.prototype.import_jquery = function() {
     this.imported["jquery"] = true;
 }
 
-// Converts data from OGRA format to Google charts format.
+// DataTable format is equal to Google charts format.
 OGRA.prototype.data_google = function(data) {
     
     var result = data;
     return result;
 }
 
-// Converts data from OGRA format to DyGraphs format.
+// Converts data from DataTable format to DyGraphs format.
 OGRA.prototype.data_dygraphs = function(data) {
     
 	// date data
@@ -346,7 +346,7 @@ OGRA.prototype.data_dygraphs = function(data) {
     return result;
 }
 
-// Converts data from OGRA format to Highcharts format.
+// Converts data from DataTable format to Highcharts format.
 OGRA.prototype.data_high = function(data, chart_type) {
     
     var result = [];
@@ -411,7 +411,7 @@ OGRA.prototype.data_high = function(data, chart_type) {
 }
 
 
-// Converts data from OGRA format to Highcharts format.
+// Converts data from DataTable format to Highcharts format.
 OGRA.prototype.data_flot = function(data, chart_type) {
     
     var result = [];

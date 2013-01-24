@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-        <title>OGRA JS library</title>
+        <title>OGRA library</title>
 
 		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
 
@@ -20,7 +20,7 @@
 				</div>
 
 
-				<h1>OGRA JS library</h1>
+				<h1>OGRA library</h1>
 				
 				<ul id="navigation">
 					<li><a href="../index.html">About OGRA</a></li>
@@ -32,37 +32,31 @@
 
 			<div id="wrap-body">
 
-			<h2>Example: Same data displayed with multiple chart types.</h2>
+			<h2>Example: The same data displayed with multiple chart types</h2>
 
 			<p>Line or column chart? Why not both?</p>
 
 
 			<h3>HTML:</h3>
-			<p>Import OGRA JS and create elements for future charts.</p>
-			<pre>
+			<p>Import OGRA and create elements for future charts.</p>
+			<pre>&lt;script type="text/javascript" src="https://raw.github.com/CZNIC-Labs/ogra/master/ogra.js"&gt;&lt;/script&gt;
 
-	&lt;script type="text/javascript" src="https://raw.github.com/CZNIC-Labs/ogra/master/ogra.js"&gt;&lt;/script&gt;
-
-	&lt;div id="my_chart_1"&gt;&lt;/div&gt;
-	&lt;div id="my_chart_2"&gt;&lt;/div&gt;
-	&lt;div id="my_chart_3"&gt;&lt;/div&gt;
-	&lt;div id="my_chart_4"&gt;&lt;/div&gt;
-	&lt;div id="my_chart_5"&gt;&lt;/div&gt;
-			</pre>
+&lt;div id="my_chart_1"&gt;&lt;/div&gt;
+&lt;div id="my_chart_2"&gt;&lt;/div&gt;
+&lt;div id="my_chart_3"&gt;&lt;/div&gt;
+&lt;div id="my_chart_4"&gt;&lt;/div&gt;
+&lt;div id="my_chart_5"&gt;&lt;/div&gt;</pre>
 
 
 			<h3>Javascript:</h3>
 			<p>Prepare your data and create chart.</p>
-			<pre>
+			<pre>var data = {"cols":[{"label":"Year", "type":"string"},{"label":"Sales", "type":"number"},{"label":"Expenses", "type":"number"}],"rows":[{"c":[{"v":"2004"},{"v":1000},{"v":400}]},{"c":[{"v":"2005"},{"v":1170},{"v":460}]},{"c":[{"v":"2006"},{"v":660},{"v":1120}]},{"c":[{"v":"2007"},{"v":1030},{"v":540}]}]};			
 
-	var data = {"cols":[{"label":"Year", "type":"string"},{"label":"Sales", "type":"number"},{"label":"Expenses", "type":"number"}],"rows":[{"c":[{"v":"2004"},{"v":1000},{"v":400}]},{"c":[{"v":"2005"},{"v":1170},{"v":460}]},{"c":[{"v":"2006"},{"v":660},{"v":1120}]},{"c":[{"v":"2007"},{"v":1030},{"v":540}]}]};			
-
-	Ogra.graph("my_chart_1", data, "column", "google", {} );
-	Ogra.graph("my_chart_2", data, "line", "google", {} );
-	Ogra.graph("my_chart_3", data, "pie", "google", {} );
-	Ogra.graph("my_chart_4", data, "bar", "google", {} );
-	Ogra.graph("my_chart_5", data, "table", "google", {} );
-			</pre>
+Ogra.graph("my_chart_1", data, "column", "google", {} );
+Ogra.graph("my_chart_2", data, "line", "google", {} );
+Ogra.graph("my_chart_3", data, "pie", "google", {} );
+Ogra.graph("my_chart_4", data, "bar", "google", {} );
+Ogra.graph("my_chart_5", data, "table", "google", {} );</pre>
 
 
 			<h3>Result:</h3>

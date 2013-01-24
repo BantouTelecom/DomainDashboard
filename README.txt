@@ -1,5 +1,5 @@
-OGRA JS library
-===============
+OGRA library
+============
 
 OGRA is a javascript library that allows display of online charts using several third party libraries using one unified format.
 
@@ -11,9 +11,9 @@ Online documentation (also included in this repository) - https://devpub.labs.ni
 OGRA is used for statistics of Czech domain name registry - https://stats.labs.nic.cz/
 
 
-BUGREPORTS:
+BUG REPORT:
 
-Bug reports and feedback please send to jan.danihelka@nic.cz
+Please send bug reports and feedback to jan.danihelka@nic.cz
 
 
 LICENSE:

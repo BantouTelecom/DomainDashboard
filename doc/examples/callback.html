@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-        <title>OGRA JS library</title>
+        <title>OGRA library</title>
 
 		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
 
@@ -20,7 +20,7 @@
 				</div>
 
 
-				<h1>OGRA JS library</h1>
+				<h1>OGRA library</h1>
 				
 				<ul id="navigation">
 					<li><a href="../index.html">About OGRA</a></li>
@@ -32,7 +32,7 @@
 
 			<div id="wrap-body">
 
-			<h2>Example: Using of callback method.</h2>
+			<h2>Example: Using the callback method</h2>
 
 			<dl>
 				<dt><b>callback</b>: Function</dt><dd>Callback method is called after drawing of chart is complete. First parameter for callback method is reference to the chart that has been just created.</dd>
@@ -41,31 +41,25 @@
 
 
 			<h3>HTML:</h3>
-			<p>Import OGRA JS and create element for future chart and report message.</p>
-			<pre>
+			<p>Import OGRA and create element for future chart and report message.</p>
+			<pre>&lt;script type="text/javascript" src="https://raw.github.com/CZNIC-Labs/ogra/master/ogra.js"&gt;&lt;/script&gt;
 
-	&lt;script type="text/javascript" src="https://raw.github.com/CZNIC-Labs/ogra/master/ogra.js"&gt;&lt;/script&gt;
+&lt;div id="my_chart"&gt;&lt;/div&gt;
 
-	&lt;div id="my_chart"&gt;&lt;/div&gt;
-
-	&lt;div id="report"&gt;&lt;/div&gt;
-			</pre>
+&lt;div id="report"&gt;&lt;/div&gt;</pre>
 
 
 			<h3>Javascript:</h3>
 			<p>Prepare your data and create chart.</p>
-			<pre>
+			<pre>var data = {"cols":[{"label":"Year", "type":"string"},{"label":"Sales", "type":"number"},{"label":"Expenses", "type":"number"}],"rows":[{"c":[{"v":"2004"},{"v":1000},{"v":400}]},{"c":[{"v":"2005"},{"v":1170},{"v":460}]},{"c":[{"v":"2006"},{"v":660},{"v":1120}]},{"c":[{"v":"2007"},{"v":1030},{"v":540}]}]};			
 
-	var data = {"cols":[{"label":"Year", "type":"string"},{"label":"Sales", "type":"number"},{"label":"Expenses", "type":"number"}],"rows":[{"c":[{"v":"2004"},{"v":1000},{"v":400}]},{"c":[{"v":"2005"},{"v":1170},{"v":460}]},{"c":[{"v":"2006"},{"v":660},{"v":1120}]},{"c":[{"v":"2007"},{"v":1030},{"v":540}]}]};			
+function my_method(chart_reference, arg1, arg2) {		
+	var element = document.getElementById("report");
+	element.style.color = "red";
+	element.innerHTML = "Chart is complete! " + arg1 + ", " + arg2;
+}
 
-	function my_method(chart_reference, arg1, arg2) {		
-		var element = document.getElementById("report");
-		element.style.color = "red";
-		element.innerHTML = "Chart is complete! " + arg1 + ", " + arg2;
-	}
-
-	Ogra.graph("my_chart", data, "column", "google", {callback: my_method, callback_args:["my_arg1", "my_arg2"]} );
-			</pre>
+Ogra.graph("my_chart", data, "column", "google", {callback: my_method, callback_args:["my_arg1", "my_arg2"]} );</pre>
 
 
 			<h3>Result:</h3>
