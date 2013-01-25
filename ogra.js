@@ -49,7 +49,7 @@ function OGRA () {
     this.URL_JQUERY = prefix + "//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js";
     this.URL_GOOGLE = prefix + "//www.google.com/jsapi";
     this.URL_DYGRAPHS = prefix + "//dygraphs.com/dygraph-combined.js";
-	this.URL_HIGH = prefix + "//raw.github.com/highslide-software/highcharts.com/master/js/highcharts.src.js"
+	this.URL_HIGH = prefix + "//raw.github.com/highslide-software/highcharts.com/master/js/highcharts.src.js";
     this.URL_FLOT = prefix + "//raw.github.com/paradoxxxzero/flot/28f2377382b3af97c82cb3ebc081140b49fa9579/jquery.flot.js";
     this.URL_FLOT_PIE = prefix + "//raw.github.com/flot/flot/master/jquery.flot.pie.js";
 	
