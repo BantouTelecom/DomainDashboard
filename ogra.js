@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 OGRA library
 
-Author: Opi Danihelka (jan.danihelka@nic.cz)
+Author: Jan Danihelka (jan.danihelka@nic.cz)
 
 Developed by: CZ.NIC Labs (https://labs.nic.cz)
 
